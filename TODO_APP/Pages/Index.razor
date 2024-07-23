@@ -1,0 +1,124 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+<div class="background-grad p-5 m-5">
+    <div class="alert alert-primary" role="alert">
+        <h3 class="text-center ">Todo List</h3>
+    </div>
+    <div class="d-grid gap-2">
+        <input class="input_box" type="text" @bind="newTodoItemInput" />
+        <button class="add btn btn-primary" placeholder="Enter new value" @onclick="addTodoItem"> ↗ Add ↖ </button>
+    </div>
+
+    <hr />
+    <ol class="list-group">
+        @foreach (string todoItem in todoList)
+        {
+            <li class="list-group-item">
+                @todoItem
+                <button class="btn btn-danger btn-sm float-end" @onclick="(() => deleteTodoItem(todoItem))">
+                    <span class="oi oi-delete" />
+                </button>
+                <button class="btn btn-secondary btn-sm float-end me-2" @onclick="(() => SetTodoItemToUpdate(todoItem))">
+                    Update
+                </button>
+            </li>
+        }
+    </ol>
+</div>
+
+
+@if (!string.IsNullOrWhiteSpace(todoItemToUpdate))
+{
+    <div class="update_btn">
+        <input type="text" class="input" @bind="newTodoItem" placeholder="Enter new value" />
+       
+        <button class=" btn btn-primary btn-sm" @onclick="UpdateTodoItem">
+            Save
+        </button>
+    </div>
+}
+
+<style type="text/css">
+    .background-grad {
+        background-color: aliceblue;
+        background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+        box-shadow: 10px 10px 20px #babecc, -10px -10px 20px #ffff;
+        
+    }
+    .add{
+        -webkit-text-stroke: 1px black;
+        font-size: 1.3vw;
+       color:blue;
+        font-weight: bolder;
+        font-family: 'Arial Black', Arial, gilray;
+    }
+
+    .update_btn {
+        margin-top:-12vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .text-center{
+        -webkit-text-stroke: 3px black;
+        font-size:2.3vw;
+        color:blue;
+        -webkit-font-smoothing:antialiased;
+        font-weight:bolder;
+        font-family: 'Arial Black', Arial, gilray;
+    }
+    .input_box{
+        border-radius:10px;
+        border-color:white;
+    }
+
+    .input {
+        border-radius: 5px;
+        border-color: white; 
+        margin: 0 5px 0 0;
+    }
+</style>
+@code {
+    List<string> todoList = new() { "Mango", "Orange" };
+    string newTodoItemInput = "";
+    string newTodoItem = "";
+    string todoItemToUpdate;
+
+    
+
+    void addTodoItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodoItemInput))
+        {
+            todoList.Add(newTodoItemInput);
+            newTodoItemInput = "";
+        }
+    }
+
+    void deleteTodoItem(string todoItemToDelete)
+    {
+        todoList.Remove(todoItemToDelete);
+    }
+
+    void SetTodoItemToUpdate(string todoItem)
+    {
+        todoItemToUpdate = todoItem;
+        newTodoItem = todoItem;
+    }
+
+    void UpdateTodoItem()
+    {
+        int index = todoList.IndexOf(todoItemToUpdate);
+        if (index != -1 && !string.IsNullOrWhiteSpace(newTodoItem))
+        {
+            todoList[index] = newTodoItem;
+            todoItemToUpdate = null;
+            newTodoItem = null;
+        }
+    }
+}
+
+   
